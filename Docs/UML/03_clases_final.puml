@@ -1,0 +1,313 @@
+@startuml
+skinparam classAttributeIconSize 0
+title Clases final - reconstrucción del JPG; revisar diferencias documentadas
+class Persona {
+-nombre: String
+-apellido: String
+-documento: int
+-telefono: int
+-correo: String
+}
+class Barrio {
+-nombreBarrio: String
++calcularCoeficientes()
++obtenerEquipos()
++obtenerReclamos()
+}
+class Lote {
+-numero: int
+-superficie: float
+-coeficiente: float
+-moroso: boolean
++agregarVinculo(persona, rol)
++cambiarTitular(persona)
++obtenerTitular(): Persona
++obtenerResidentes(): List<Persona>
++puedePresentarReclamo(persona): boolean
++calcularDeudaCapital(): double
++cantidadPeriodosImpagos(): int
++calcularDeudaIntereses(fecha): double
+}
+class VinculoLote {
+-rol: RolLote
+-fechaDesde: Date
+-fechaHasta: Date
++estaVigente(): boolean
+}
+class Administrador {
++recibirEscalacion(reclamo)
+}
+abstract class Personal {
+-legajo: int
+-nombre: String
+-fechaIngreso: Date
+}
+class GuardiaDeSeguridad {
+-turno: String
+-puesto: PuestoGuardia
+}
+class EmpleadoDeMantenimiento {
+-especialidad: Especialidad
+}
+class Reclamo {
+-numero: int
+-fecha: String
+-tipo: TipoReclamo
+-descripcion: String
+-prioridad: PrioridadReclamo
+-estado: EstadoReclamo
++getPrioridad(): PrioridadReclamo
++registrarCambio(nuevoEstado, observacion)
++agregarComentario(texto, autor)
++getHistorial(): List<CambioEstado>
++estaPendiente()
+}
+class GestionReclamos {
++registrar(lote, persona, tipo, descripcion): List<Reclamo>
++asignar(reclamo, personal)
++avanzarEstado(reclamo, observacion)
++reabrir(reclamo)
++escalar(reclamo)
++validarLimiteEnCurso(personal): boolean
+}
+class CambioEstado {
+-fecha: Date
+-nuevoEstado: EstadoReclamo
+-observaciones: String
+}
+class Comentarios {
+-fecha: String
+-texto: String
+-autor: String
+}
+class Expensa {
+-periodo: String
+-importe: double
+-fechaDeVencimiento: Date
+-estado: EstadoExpensa
++calcularSaldo(): double
++estaVencida(fecha): boolean
+}
+class Pago {
+-importe: float
+-medioPago: MedioDePago
+-fecha: Date
++imputar(expensas)
+}
+class AplicacionPago {
+-importeInteres: double
+-importeCapital: double
+}
+class AsientoAjuste {
+-fecha: Date
+-importe: double
+-motivo: String
+}
+class CalculadorIntereses {
++calcular(expensa, fechaPago): double
+}
+class Configuracion {
+-tasaMora: float
+-diaVencimiento: int
+-plazoReapertura: int
+-horasEscalamiento: int
+-maxEnCurso: int
+}
+class NotificacionMora {
+-fecha: Date
+-periodosImpagos: int
+}
+class FilaMorosidad {
+-lote: Lote
+-periodosImpagos: int
+-deudaCapital: double
+-deudaIntereses: double
+}
+abstract class Equipo {
+-codigo: String
+-sector: Sector
+-fechaInstalacion: String
+-estado: EstadoEquipo
++prioridadOrden(fallasEnSector: int): PrioridadOrden
++estaFueraDeServicio(): boolean
+}
+class Camara {
+-resolucion: int
+-diasGrabados: int
++prioridadOrden()
+}
+class Luminaria {
+-tipoLampara: String
+-potencia: int
++prioridadOrden()
+}
+class FallaEquipo {
+-fecha: Date
+-descripcion: String
+}
+class OrdenDeMantenimiento {
+-fechaDeApertura: Date
+-descripcion: String
+-prioridad: PrioridadOrden
+-fechaDeCierre: String
++cerrar(fecha, tecnico, descripcionReparacion)
+}
+class Autorizacion {
+-nombreVisitante: String
+-documentoVisitante: int
+-fechaDesde: Date
+-fechaHasta: Date
+-franjaHoraria: String
+-recurrente: boolean
++estaVigente(fecha, hora): boolean
++permiteIngreso(): boolean
+}
+class RegistroAcceso {
+-horaIngreso: DateTime
+-horaEgreso: DateTime
++registrarEgreso(hora)
++estaAdentro(): boolean
+}
+class ControladorReclamos {
+-gestor: GestionReclamos
++registrarReclamo(lote, persona, tipo, descripcion): Reclamo
++asignarReclamo(reclamo, personal)
++avanzarEstado(reclamo, observacion)
++reabrirReclamo(reclamo)
++agregarComentario(reclamo, texto, autor)
++consultarHistorial(reclamo): List<CambioEstado>
+}
+class ControladorExpensa {
+-calculador: CalculadorIntereses
++emitirExpensas(periodo, presupuesto)
++registrarPago(lote, importe, medioPago, fecha): Pago
++registrarAjuste(pago, importe, motivo)
++consultarEstadoCuenta(lote): List<Expensa>
++verificarMorosidad()
+}
+class ControladorEquipos {
++registrarEquipo(datos): Equipo
++registrarFalla(equipo, descripcion, reportadoPor): FallaEquipo
++generarOrden(equipo, empleado): OrdenDeMantenimiento
++cerrarOrden(orden, fecha, tecnico, descripcion)
++consultarEstado(equipo): EstadoEquipo
++verificarCamaraSinFuncionar()
+}
+class ControladorVisitas {
++registrarAutorizacion(lote, persona, visitante, documento, desde, hasta, franja, recurrente): Autorizacion
++consultarAutorizacion(documento, fecha, hora): Autorizacion
++registrarIngreso(autorizacion, guardia): RegistroAcceso
++registrarEgreso(registro)
++registrarEgresoManual(registro, observacion)
+}
+class ControladorReportes {
+-barrio: Barrio
++reclamosPendientes(desde, hasta, tipo): List<Reclamo>
++morosidadPorLote(hasta): List<FilaMorosidad>
++equiposFueraDeServicio(sector): List<Equipo>
+}
+enum RolLote {
+Titular
+Familiar
+Inquilino
+Autorizado
+}
+enum EstadoReclamo {
+Abierto
+Asignado
+EnCurso
+Resuelto
+Cerrado
+}
+enum PrioridadReclamo {
+Alta
+Media
+Baja
+}
+enum TipoReclamo {
+Seguridad
+Mantenimiento
+Convivencia
+Administrativo
+}
+enum EstadoExpensa {
+Pendiente
+Parcialmente_Pagada
+Pagada
+Vencida
+}
+enum MedioDePago {
+EFECTIVO
+TRANSFERENCIA
+TARJETA
+}
+enum PrioridadOrden {
+Normal
+Alta
+}
+enum EstadoEquipo {
+Operativo
+Con_Falla
+En_Reparacion
+Fuera_De_Servicio
+}
+enum Sector {
+CallesInternas
+Accesos
+EspaciosComunes
+}
+enum PuestoGuardia {
+Porteria
+Ronda
+Monitoreo
+}
+enum Especialidad {
+Electricidad
+Plomeria
+Jardineria
+}
+
+Personal <|-- GuardiaDeSeguridad
+Personal <|-- EmpleadoDeMantenimiento
+Persona <|-- Administrador
+Equipo <|-- Camara
+Equipo <|-- Luminaria
+Barrio "1" *-- "150" Lote
+Barrio "1" -- "*" Equipo
+Lote "1" *-- "*" VinculoLote
+VinculoLote "*" --> "1" Persona
+Lote "1" -- "*" Reclamo
+Reclamo "*" --> "1" Persona : solicitante
+Reclamo "*" --> "0..1" Personal : responsable
+Reclamo "1" *-- "*" CambioEstado
+Reclamo "1" *-- "*" Comentarios
+Lote "1" -- "*" Expensa
+Pago "1" *-- "*" AplicacionPago
+AplicacionPago "*" --> "1" Expensa
+Pago "1" *-- "*" AsientoAjuste
+Lote "1" -- "*" NotificacionMora
+Equipo "1" -- "*" FallaEquipo
+Equipo "1" -- "*" OrdenDeMantenimiento
+OrdenDeMantenimiento "*" --> "1" Personal
+Lote "1" -- "*" Autorizacion
+Autorizacion "*" --> "1" Persona : autoriza
+Autorizacion "1" *-- "*" RegistroAcceso
+RegistroAcceso "*" --> "1" GuardiaDeSeguridad
+ControladorReclamos --> GestionReclamos
+GestionReclamos ..> Reclamo
+GestionReclamos ..> Configuracion
+ControladorExpensa --> CalculadorIntereses
+CalculadorIntereses ..> Configuracion
+ControladorExpensa ..> Pago
+ControladorEquipos ..> Equipo
+ControladorVisitas ..> Autorizacion
+ControladorVisitas ..> RegistroAcceso
+ControladorReportes --> Barrio
+ControladorReportes ..> FilaMorosidad
+note right of Equipo
+El JPG usa un parámetro en Equipo,
+pero no en las subclases.
+Se conserva para revisión, sin certificar sobreescritura.
+end note
+
+@enduml

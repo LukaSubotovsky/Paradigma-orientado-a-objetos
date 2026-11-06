@@ -1,0 +1,35 @@
+@startuml
+skinparam classAttributeIconSize 0
+title Registrar ingreso de visitas - reconstrucción para revisión
+actor "Guardia de seguridad" as G
+participant ControladorVisitas as C
+participant Autorizacion as A
+participant RegistroAcceso as R
+G -> C : consultarAutorizacion(documento, fecha, hora)
+C -> A : estaVigente(fecha, hora)
+A --> C : vigente
+alt autorización no vigente
+ C --> G : ingreso no habilitado
+else autorización vigente
+ C -> A : permiteIngreso()
+ A -> R : estaAdentro()
+ R --> A : boolean
+ A --> C : permitido o rechazado
+ alt permitido
+  G -> C : registrarIngreso(autorizacion, guardia)
+  C -> A : registrarIngreso(guardia, hora)
+  create R
+  A -> R : RegistroAcceso(horaIngreso, guardia)
+  C --> G : ingreso habilitado
+ else ingreso abierto o permiso agotado
+  C --> G : ingreso rechazado
+ end
+end
+G -> C : registrarEgreso(registro)
+C -> R : registrarEgreso(hora)
+C --> G : egreso registrado
+note over A
+registrarIngreso se usa en el JPG de secuencia,
+pero falta en la clase final; revisar antes de entregar.
+end note
+@enduml
