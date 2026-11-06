@@ -1,26 +1,29 @@
 # Nota de cambios del diagrama inicial al final
 
-Propuesta A: Gestión del barrio cerrado Los Aromos.
-
-Esta comparación documenta los diagramas JPG existentes en el repositorio. No afirma que las correcciones pendientes ya se hayan aplicado.
+**Propuesta A: Gestión del barrio cerrado Los Aromos.** La comparación se basa en los diagramas inicial y final existentes, y en las reglas y supuestos del informe.
 
 | Aspecto | Diseño inicial | Diseño final | Motivo |
 |---|---|---|---|
-| Coordinación | Gestión concentrada en entidades y GestionDeReclamo | Controladores de Reclamos, Expensa, Equipos, Visitas y Reportes | Separar interacción y coordinación; GRASP Controlador. |
-| Reclamos | GestionDeReclamo y Solicitud separada | GestionReclamos, CambioEstado y Comentarios | Agrupar solicitudes y reclamos conforme S1 y conservar trazabilidad. |
-| Roles de vecinos | Vecino y titular como atributo de Lote | Persona, VinculoLote y RolLote | Permitir distintos roles por persona y lote sin multiplicar subclases. |
-| Expensas | RegistroDeExpensas y Pago con interés | Expensa, Pago, AplicacionPago, AsientoAjuste y CalculadorIntereses | Separar cálculo, imputación y correcciones; preservar pagos. |
-| Parámetros | Valores no centralizados | Configuracion | Concentrar tasa, vencimiento y plazos; variaciones protegidas. |
-| Morosidad | Sin representación específica del reporte | NotificacionMora y FilaMorosidad | Registrar notificaciones y transportar filas del reporte. |
-| Accesos | Visita y RegistroDeVisita | Autorizacion y RegistroAcceso | Separar permiso previo del hecho de ingreso/egreso y permitir recurrencia. |
-| Equipos | Equipo sin abstracción explícita y conexiones de herencia ambiguas | Equipo abstracto, Camara y Luminaria con prioridadOrden | Hacer explícito el polimorfismo para prioridades. |
-| Fallas | RegistroDeFalla | FallaEquipo vinculada a Equipo | Registrar hechos de falla separados del estado actual. |
-| Estados | Estados y tipos parcialmente definidos | Enumeraciones específicas para reclamos, expensas y equipos | Evitar valores ambiguos y distinguir ciclos de vida. |
+| Coordinación | Responsabilidades concentradas en gestores y entidades | Controladores de reclamos, expensas, equipos, visitas y reportes | Separar la interacción del usuario de la coordinación del sistema (GRASP Controlador). |
+| Reclamos | Gestión de reclamos y solicitudes separadas | `GestionReclamos`, `Reclamo`, `CambioEstado` y `Comentario` | S1 unifica reclamo y solicitud; el historial conserva trazabilidad. |
+| Roles del lote | Vecino y titular representados directamente en el lote | `Persona`, `VinculoLote` y `RolLote` | Representar titulares, residentes y autorizados sin crear una subclase por rol. |
+| Expensas | Registro de expensas y pago con cálculo asociado | `Expensa`, `Pago`, `AplicacionPago`, `AsientoAjuste` y `CalculadorIntereses` | Separar deuda, pagos, imputación y correcciones; cumplir RN10–RN13. |
+| Parámetros | Valores de reglas dispersos | `Configuracion` | Centralizar tasa y plazos para facilitar cambios. |
+| Morosidad | Sin objeto para cada fila del informe | `NotificacionMora` y `FilaMorosidad` | Separar el aviso formal del dato que presenta el reporte. La consulta aplica RN12 (>3 períodos). |
+| Accesos | Visita y registro de visita | `Autorizacion` y `RegistroAcceso` | Distinguir permiso previo del ingreso/egreso; contemplar recurrencia según RN18–RN20. |
+| Equipos | Tipo y comportamiento de equipos poco explícitos | `Equipo` abstracto con `Camara` y `Luminaria` | Aplicar prioridad polimórfica, con la misma firma en la clase abstracta y sus subclases, según RN15. |
+| Fallas y órdenes | Registro de falla y órdenes menos diferenciados | `FallaEquipo` y `OrdenMantenimiento` vinculados al equipo | Conservar el historial de fallas y órdenes (RN23). |
+| Estados | Valores representados de forma parcial | Enumeraciones específicas para reclamos, expensas y equipos | Evitar mezclar estados de ciclos de vida diferentes. |
 
-## Aclaraciones para la defensa
+## Coherencia aplicada
 
-- Los controladores coordinan; las clases con información y los servicios aplican las reglas correspondientes.
-- La composición se usa para partes cuyo ciclo de vida depende del objeto que las contiene, por ejemplo historial y comentarios del reclamo.
-- La comparación no demuestra una eliminación de herencia Administrador-Personal: esa herencia no está dibujada en el inicial. La justificación de Liskov debe basarse en relaciones efectivamente presentes.
-- Persisten diferencias de nombres y firmas entre las imágenes y el informe. En particular, GestorReclamos/GestionReclamos y prioridadOrden con/sin parámetro requieren una decisión común del grupo.
-- S23 excluye el cambio de titular, aunque el diagrama final muestra cambiarTitular; se debe resolver esa diferencia antes de cerrar el diseño.
+- `GestionReclamos.registrar(...)` devuelve un único `Reclamo`, como lo declara `ControladorReclamos.registrarReclamo(...)`.
+- Los nombres se normalizaron como `GestionReclamos`, `Comentario`, `ControladorExpensas` y `OrdenMantenimiento`.
+- `Equipo.prioridadOrden(fallasEnSector)` es abstracto; `Camara` y `Luminaria` declaran la misma firma para permitir sobrescritura. La cámara devuelve prioridad alta; la luminaria la eleva si hay más de tres fallas de ese tipo en el sector (RN15).
+- `Barrio.obtenerLotes()` se incorpora porque el reporte debe recorrer los lotes. `Lote.calcularDeudaIntereses(hasta)` recibe la fecha de corte. Solo se reportan lotes con más de tres períodos impagos (RN12).
+- `ControladorVisitas` crea el `RegistroAcceso` después de validar autorización, franja horaria y que no haya un ingreso abierto (RN18–RN20). El egreso cierra ese registro.
+- Se excluye `Lote.cambiarTitular(...)` porque S23 deja explícitamente fuera de alcance el cambio de titular. Se registra un titular por lote durante el trabajo (RN21); gestionar los datos maestros no habilita reemplazarlo.
+
+## Alcance de la comparación
+
+La herencia `Administrador`–`Personal` no aparece en el diagrama inicial; por eso la nota no afirma que se haya eliminado. La justificación de Liskov debe apoyarse en una relación de herencia que sí figure en los diagramas. Los PNG/JPG de referencia se conservan; las fuentes PlantUML permiten revisar el diseño alineado antes de reemplazar las imágenes originales.
