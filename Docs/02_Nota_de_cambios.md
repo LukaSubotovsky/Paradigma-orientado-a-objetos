@@ -22,7 +22,7 @@
 - `Equipo.prioridadOrden(fallasEnSector)` es abstracto; `Camara` y `Luminaria` declaran la misma firma para permitir sobrescritura. La cámara devuelve prioridad alta; la luminaria la eleva si hay más de tres fallas de ese tipo en el sector (RN15).
 - `Barrio.obtenerLotes()` se incorpora porque el reporte debe recorrer los lotes. `Lote.calcularDeudaIntereses(hasta)` recibe la fecha de corte. Solo se reportan lotes con más de tres períodos impagos (RN12).
 - `ControladorVisitas` crea el `RegistroAcceso` después de validar autorización, franja horaria y que no haya un ingreso abierto (RN18–RN20). El egreso cierra ese registro.
-- Se mantiene `Lote.cambiarTitular(...)` porque RF24 contempla gestionar titulares y RN21 establece que cada lote tiene uno solo. La operación debe preservar esa unicidad.
+- Se excluye `Lote.cambiarTitular(...)` porque S23 deja explícitamente fuera de alcance el cambio de titular. Se registra un titular por lote durante el trabajo (RN21); gestionar los datos maestros no habilita reemplazarlo.
 
 ## Alcance de la comparación
 
