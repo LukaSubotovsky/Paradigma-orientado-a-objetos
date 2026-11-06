@@ -1,0 +1,55 @@
+@startuml
+skinparam classAttributeIconSize 0
+left to right direction
+title Casos de uso - reconstrucción del JPG
+actor Vecino
+actor Administrador
+actor "Guardia de seguridad" as Guardia
+actor "Empleado de mantenimiento" as Empleado
+actor Personal
+rectangle "Sistema de Gestión del Barrio Cerrado" {
+usecase "Registrar reclamo" as U0
+usecase "Validar titular o autorizado" as U1
+usecase "Consultar y seguir reclamo" as U2
+usecase "Reabrir reclamo" as U3
+usecase "Autorizar visita" as U4
+usecase "Consultar autorización vigente" as U5
+usecase "Registrar ingreso y egreso" as U6
+usecase "Consultar estado de equipo" as U7
+usecase "Registrar fallas de equipo" as U8
+usecase "Asignar reclamo" as U9
+usecase "Generar orden de mantenimiento" as U10
+usecase "Registrar pago" as U11
+usecase "Calcular intereses por mora" as U12
+usecase "Emitir expensas" as U13
+usecase "Cerrar reclamo" as U14
+usecase "Cerrar orden de mantenimiento" as U15
+usecase "Reporte de equipos fuera de servicio" as U16
+usecase "Reporte de reclamos pendientes" as U17
+usecase "Reporte de morosidad por lote" as U18
+}
+Vecino -- U0
+Vecino -- U2
+Vecino -- U4
+Vecino -- U8
+Administrador -- U7
+Administrador -- U9
+Administrador -- U10
+Administrador -- U11
+Administrador -- U12
+Administrador -- U13
+Administrador -- U14
+Administrador -- U16
+Administrador -- U17
+Administrador -- U18
+Guardia -- U6
+Guardia -- U7
+Guardia -- U8
+Empleado -- U15
+U0 ..> U1 : <<include>>
+U6 ..> U5 : <<include>>
+U3 ..> U2 : <<extend>>
+Personal <|-- Guardia
+Personal <|-- Empleado
+
+@enduml

@@ -1,0 +1,172 @@
+@startuml
+skinparam classAttributeIconSize 0
+title Clases inicial - reconstrucción con ambigüedades conservadas
+class Persona {
+-nombre: String
+-apellido: String
+-documento: int
+-telefono: int
+-correo: String
+}
+class Lote {
+-numero: int
+-superficie: float
+-coeficiente: float
+-moroso: boolean
++agregarVinculo(persona, rol)
++cambiarTitular(persona)
++obtenerTitular(): Persona
++obtenerResidentes(): List<Persona>
++puedePresentarReclamo(persona): boolean
++calcularDeudaCapital(): double
++cantidadPeriodosImpagos(): int
++calcularDeudaIntereses(fecha): double
+}
+class Barrio {
+-nombreBarrio: String
++calcularCoeficientes()
++obtenerEquipos()
++obtenerReclamos()
+}
+class Personal {
+-legajo: int
+-nombre: String
+-fechaIngreso: Date
+}
+class EmpleadoDeMantenimiento {
+-especialidad: Especialidad
+}
+class GuardiaDeSeguridad {
+-turno: String
+-puesto: PuestoGuardia
+}
+class Administrador {
+-nombreAdministrador: String
+-barrio: Barrio
++barrioAdministrado(): void
++AdministradorAsignado(): void
+}
+class Equipo {
+-codigo: String
+-sector: Sector
+-fechaInstalacion: String
+-estado: Estado
++method(type): type
+}
+class Camara {
+-resolucion: int
+-cantidadDiasGrabados: int
++almacenarGrabacion()
+}
+class Luminaria {
+-tipoLampara: Tipo
+-potencia: int
++method(type): type
+}
+class Sector {
+-callesInternas
+-accesos
+-espaciosComunes
++method(type): type
+}
+class Reclamo {
+-numero: int
+-fecha: String
+-tipo: TipoReclamo
+-descripcion: String
+-prioridad: PrioridadReclamo
+-estado: EstadoReclamo
+-lote: Lote
++getPrioridad()
+}
+class GestionDeReclamo {
+-reclamo: Reclamo
+-empleado: Personal
+-nuevoEstado: Estado
+-fecha: String
+-observacion: String
++personalCoordinado()
++cambioDeEstado()
++Comentarios(): String
+}
+class Solicitud {
+-nombre: String
+-descripcion: String
++registrarSolicitud()
+}
+class Expensa {
+-lote: Lote
+-periodo: String
+-importe: float
+-fechaDeVencimiento: String
+-estado: Estado
++emitirExpensas()
+}
+class Pago {
+-importe: float
+-interesPorMora: float
+-fecha: String
++fechaDePago(): String
++fechaVencida(): float
+}
+class RegistroDeExpensas {
+-fecha: String
+-importe: float
+-medioDePago: Pago
++registrarExpensa()
++expensaCancelada()
+}
+class OrdenDeMantenimiento {
+-fechaDeApertura: String
+-descripcionDelTrabajo: EmpleadoDeMantenimiento
+-prioridad: String
+-descripcionDelTrabajo: String
+-fechaDeCierre: String
++method(type): type
+}
+class RegistroDeFalla {
+-equipo: Equipo
++registrarFallaEquipo()
+}
+class Vecino {
+-vecino: Residente
++autorizacionVisita()
+}
+class Visita {
+-nombre: String
+-documento: int
+-loteAVisitar: Lote
+-fecha: String
+-horarioPermitido: String
+-visitaHabitual()
+-visitaNueva()
+}
+class RegistroDeVisita {
+-horaIngreso
+-horaEgreso
++consultarAutorizacion()
+}
+Personal <|-- GuardiaDeSeguridad
+Personal <|-- EmpleadoDeMantenimiento
+Barrio "1" *-- "*" Lote
+Persona "1" -- Lote
+Administrador -- Barrio
+Administrador -- Personal
+GestionDeReclamo -- Reclamo
+GestionDeReclamo -- Solicitud
+GestionDeReclamo -- Personal
+RegistroDeExpensas ..> Expensa
+RegistroDeExpensas ..> Pago
+RegistroDeFalla -- Equipo
+Equipo -- Sector
+Sector -- Camara : conexión ambigua en JPG
+Sector -- Luminaria : conexión ambigua en JPG
+GuardiaDeSeguridad --> RegistroDeVisita
+RegistroDeVisita -- Vecino
+Visita --> Vecino
+note bottom of Equipo
+Los textos method(type): type se conservan del inicial.
+Las relaciones ambiguas deben revisarse contra la imagen.
+end note
+
+@enduml

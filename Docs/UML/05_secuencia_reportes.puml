@@ -1,0 +1,47 @@
+@startuml
+skinparam classAttributeIconSize 0
+title Emitir reportes - reconstrucción para revisión
+actor Administrador as A
+participant ControladorReportes as C
+participant Barrio as B
+participant Lote as L
+participant Reclamo as R
+participant Equipo as E
+participant FilaMorosidad as F
+alt reclamos pendientes
+ A -> C : reclamosPendientes()
+ C -> B : obtenerReclamos(desde, hasta)
+ B --> C : reclamos del período
+ loop por cada reclamo
+  C -> R : estaPendiente()
+  R --> C : boolean
+ end
+ C --> A : reclamos filtrados
+else morosidad por lote
+ A -> C : morosidadPorLote()
+ C -> B : obtenerLotes()
+ B --> C : lotes
+ C -> L : cantidadPeriodosImpagos()
+ L --> C : cantidad
+ C -> L : calcularDeudaCapital()
+ L --> C : capital
+ C -> L : calcularDeudaIntereses()
+ L --> C : intereses
+ C -> F : FilaMorosidad(lote, periodos, capital, intereses)
+ C --> A : filas de morosidad
+else equipos fuera de servicio
+ A -> C : equiposFueraDeServicio(sector)
+ C -> B : obtenerEquipos()
+ B --> C : equipos
+ loop por cada equipo
+  C -> E : estaFueraDeServicio()
+  E --> C : boolean
+ end
+ C --> A : equipos filtrados
+end
+note over B,L
+Se conservan diferencias de firmas del JPG.
+Falta incorporar obtenerLotes en clases
+y explicitar recorrido y filtro de lotes morosos.
+end note
+@enduml
