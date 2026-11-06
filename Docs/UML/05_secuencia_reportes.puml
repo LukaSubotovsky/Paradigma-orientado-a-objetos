@@ -1,6 +1,6 @@
 @startuml
 skinparam classAttributeIconSize 0
-title Emitir reportes - reconstrucción para revisión
+title Generar reportes de gestión
 actor Administrador as A
 participant ControladorReportes as C
 participant Barrio as B
@@ -9,39 +9,44 @@ participant Reclamo as R
 participant Equipo as E
 participant FilaMorosidad as F
 alt reclamos pendientes
- A -> C : reclamosPendientes()
- C -> B : obtenerReclamos(desde, hasta)
- B --> C : reclamos del período
+ A -> C : reclamosPendientes(desde, hasta, tipo)
+ C -> B : obtenerReclamos()
+ B --> C : listaReclamos
  loop por cada reclamo
   C -> R : estaPendiente()
-  R --> C : boolean
+  R --> C : pendiente
+  opt pendiente y dentro del período y tipo solicitado
+   C -> C : agregar al resultado
+  end
  end
- C --> A : reclamos filtrados
+ C --> A : List<Reclamo>
 else morosidad por lote
- A -> C : morosidadPorLote()
+ A -> C : morosidadPorLote(hasta)
  C -> B : obtenerLotes()
- B --> C : lotes
- C -> L : cantidadPeriodosImpagos()
- L --> C : cantidad
- C -> L : calcularDeudaCapital()
- L --> C : capital
- C -> L : calcularDeudaIntereses()
- L --> C : intereses
- C -> F : FilaMorosidad(lote, periodos, capital, intereses)
- C --> A : filas de morosidad
+ B --> C : listaLotes
+ loop por cada lote
+  C -> L : cantidadPeriodosImpagos()
+  L --> C : cantidad
+  opt cantidad > 3 (RN12)
+   C -> L : calcularDeudaCapital()
+   L --> C : capital
+   C -> L : calcularDeudaIntereses(hasta)
+   L --> C : intereses
+   C -> F : crear(lote, cantidad, capital, intereses)
+  end
+ end
+ C --> A : List<FilaMorosidad>
 else equipos fuera de servicio
  A -> C : equiposFueraDeServicio(sector)
  C -> B : obtenerEquipos()
- B --> C : equipos
+ B --> C : listaEquipos
  loop por cada equipo
   C -> E : estaFueraDeServicio()
-  E --> C : boolean
+  E --> C : fueraDeServicio
+  opt equipo del sector solicitado y fuera de servicio
+   C -> C : agregar al resultado
+  end
  end
- C --> A : equipos filtrados
+ C --> A : List<Equipo>
 end
-note over B,L
-Se conservan diferencias de firmas del JPG.
-Falta incorporar obtenerLotes en clases
-y explicitar recorrido y filtro de lotes morosos.
-end note
 @enduml

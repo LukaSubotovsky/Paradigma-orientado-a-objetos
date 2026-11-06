@@ -1,6 +1,6 @@
 @startuml
 skinparam classAttributeIconSize 0
-title Clases final - reconstrucción del JPG; revisar diferencias documentadas
+title Clases final - diseño alineado con secuencias y requisitos
 class Persona {
 -nombre: String
 -apellido: String
@@ -11,8 +11,9 @@ class Persona {
 class Barrio {
 -nombreBarrio: String
 +calcularCoeficientes()
-+obtenerEquipos()
-+obtenerReclamos()
++obtenerEquipos(): List<Equipo>
++obtenerReclamos(): List<Reclamo>
++obtenerLotes(): List<Lote>
 }
 class Lote {
 -numero: int
@@ -20,13 +21,12 @@ class Lote {
 -coeficiente: float
 -moroso: boolean
 +agregarVinculo(persona, rol)
-+cambiarTitular(persona)
 +obtenerTitular(): Persona
 +obtenerResidentes(): List<Persona>
 +puedePresentarReclamo(persona): boolean
 +calcularDeudaCapital(): double
 +cantidadPeriodosImpagos(): int
-+calcularDeudaIntereses(fecha): double
++calcularDeudaIntereses(hasta: Date): double
 }
 class VinculoLote {
 -rol: RolLote
@@ -63,7 +63,7 @@ class Reclamo {
 +estaPendiente()
 }
 class GestionReclamos {
-+registrar(lote, persona, tipo, descripcion): List<Reclamo>
++registrar(lote: Lote, persona: Persona, tipo: TipoReclamo, descripcion: String): Reclamo
 +asignar(reclamo, personal)
 +avanzarEstado(reclamo, observacion)
 +reabrir(reclamo)
@@ -75,7 +75,7 @@ class CambioEstado {
 -nuevoEstado: EstadoReclamo
 -observaciones: String
 }
-class Comentarios {
+class Comentario {
 -fecha: String
 -texto: String
 -autor: String
@@ -128,24 +128,24 @@ abstract class Equipo {
 -sector: Sector
 -fechaInstalacion: String
 -estado: EstadoEquipo
-+prioridadOrden(fallasEnSector: int): PrioridadOrden
+{abstract} +prioridadOrden(fallasEnSector: int): PrioridadOrden
 +estaFueraDeServicio(): boolean
 }
 class Camara {
 -resolucion: int
 -diasGrabados: int
-+prioridadOrden()
++prioridadOrden(fallasEnSector: int): PrioridadOrden
 }
 class Luminaria {
 -tipoLampara: String
 -potencia: int
-+prioridadOrden()
++prioridadOrden(fallasEnSector: int): PrioridadOrden
 }
 class FallaEquipo {
 -fecha: Date
 -descripcion: String
 }
-class OrdenDeMantenimiento {
+class OrdenMantenimiento {
 -fechaDeApertura: Date
 -descripcion: String
 -prioridad: PrioridadOrden
@@ -165,6 +165,7 @@ class Autorizacion {
 class RegistroAcceso {
 -horaIngreso: DateTime
 -horaEgreso: DateTime
+-guardia: GuardiaDeSeguridad
 +registrarEgreso(hora)
 +estaAdentro(): boolean
 }
@@ -177,7 +178,7 @@ class ControladorReclamos {
 +agregarComentario(reclamo, texto, autor)
 +consultarHistorial(reclamo): List<CambioEstado>
 }
-class ControladorExpensa {
+class ControladorExpensas {
 -calculador: CalculadorIntereses
 +emitirExpensas(periodo, presupuesto)
 +registrarPago(lote, importe, medioPago, fecha): Pago
@@ -188,7 +189,7 @@ class ControladorExpensa {
 class ControladorEquipos {
 +registrarEquipo(datos): Equipo
 +registrarFalla(equipo, descripcion, reportadoPor): FallaEquipo
-+generarOrden(equipo, empleado): OrdenDeMantenimiento
++generarOrden(equipo, empleado): OrdenMantenimiento
 +cerrarOrden(orden, fecha, tecnico, descripcion)
 +consultarEstado(equipo): EstadoEquipo
 +verificarCamaraSinFuncionar()
@@ -280,15 +281,15 @@ Lote "1" -- "*" Reclamo
 Reclamo "*" --> "1" Persona : solicitante
 Reclamo "*" --> "0..1" Personal : responsable
 Reclamo "1" *-- "*" CambioEstado
-Reclamo "1" *-- "*" Comentarios
+Reclamo "1" *-- "*" Comentario
 Lote "1" -- "*" Expensa
 Pago "1" *-- "*" AplicacionPago
 AplicacionPago "*" --> "1" Expensa
 Pago "1" *-- "*" AsientoAjuste
 Lote "1" -- "*" NotificacionMora
 Equipo "1" -- "*" FallaEquipo
-Equipo "1" -- "*" OrdenDeMantenimiento
-OrdenDeMantenimiento "*" --> "1" Personal
+Equipo "1" -- "*" OrdenMantenimiento
+OrdenMantenimiento "*" --> "1" Personal
 Lote "1" -- "*" Autorizacion
 Autorizacion "*" --> "1" Persona : autoriza
 Autorizacion "1" *-- "*" RegistroAcceso
@@ -296,18 +297,13 @@ RegistroAcceso "*" --> "1" GuardiaDeSeguridad
 ControladorReclamos --> GestionReclamos
 GestionReclamos ..> Reclamo
 GestionReclamos ..> Configuracion
-ControladorExpensa --> CalculadorIntereses
+ControladorExpensas --> CalculadorIntereses
 CalculadorIntereses ..> Configuracion
-ControladorExpensa ..> Pago
+ControladorExpensas ..> Pago
 ControladorEquipos ..> Equipo
 ControladorVisitas ..> Autorizacion
 ControladorVisitas ..> RegistroAcceso
 ControladorReportes --> Barrio
 ControladorReportes ..> FilaMorosidad
-note right of Equipo
-El JPG usa un parámetro en Equipo,
-pero no en las subclases.
-Se conserva para revisión, sin certificar sobreescritura.
-end note
 
 @enduml
