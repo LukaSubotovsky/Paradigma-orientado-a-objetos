@@ -1,0 +1,23 @@
+@startuml
+title Reportes y vistas de consulta
+class Barrio { +obtenerLotes(): List<Lote>
++obtenerReclamos(): List<Reclamo>
++obtenerEquipos(): List<Equipo> }
+class Lote { +cantidadPeriodosImpagos(fecha): int
++calcularDeudaCapital(): BigDecimal
++calcularDeudaIntereses(fecha): BigDecimal }
+class Reclamo { +estaPendiente(): boolean }
+abstract class Equipo { +estaFueraDeServicio(): boolean }
+class FilaMorosidad { -lote: Lote
+-periodosImpagos: int
+-deudaCapital: BigDecimal
+-deudaIntereses: BigDecimal }
+class ControladorReportes { +reclamosPendientes(desde, hasta, tipo): List<Reclamo>
++morosidadPorLote(hasta): List<FilaMorosidad>
++equiposFueraDeServicio(sector): List<Equipo> }
+ControladorReportes --> Barrio
+ControladorReportes ..> FilaMorosidad
+Barrio --> Lote
+Barrio --> Reclamo
+Barrio --> Equipo
+@enduml

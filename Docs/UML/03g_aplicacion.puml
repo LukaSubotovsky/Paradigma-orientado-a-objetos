@@ -1,0 +1,35 @@
+@startuml
+title Interfaz, usuarios y archivos
+class Usuario { -nombre: String
+-sal: String
+-claveHash: String
+-rol: RolUsuario
++validarClave(clave): boolean }
+class Sesion { -usuario: Usuario
++ingresar(barrio, nombre, clave): Sesion
++exigirRol(roles) }
+class ControladorBase { -sesion: Sesion
+-reloj: Clock
++ahora(): LocalDateTime }
+class ControladorDatos { +registrarPersona(datos)
++registrarLote(numero, superficie, dni)
++registrarUsuario(datos) }
+class MenuConsola { +ejecutar() }
+class ArchivoBarrio { +cargar(): Barrio
++guardar(barrio) }
+class Main { +main(args) }
+class DatosDemo { +crear(): Barrio }
+enum RolUsuario { ADMINISTRADOR
+VECINO
+GUARDIA
+MANTENIMIENTO }
+ControladorBase <|-- ControladorDatos
+Sesion --> Usuario
+Usuario --> RolUsuario
+ControladorDatos --> Sesion
+MenuConsola --> ControladorDatos
+MenuConsola --> ArchivoBarrio
+Main --> MenuConsola
+Main --> ArchivoBarrio
+Main --> DatosDemo
+@enduml

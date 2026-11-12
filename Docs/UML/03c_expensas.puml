@@ -1,0 +1,54 @@
+@startuml
+title Expensas y pagos
+class Lote { +calcularDeudaCapital(): BigDecimal
++calcularDeudaIntereses(hasta): BigDecimal
++verificarMorosidad(fecha) }
+class Expensa { -periodo: YearMonth
+-importe: BigDecimal
+-fechaDeVencimiento: LocalDate
+-saldoCapital: BigDecimal
+-interesPendiente: BigDecimal
++calcularSaldo(): BigDecimal
++getEstado(fecha): EstadoExpensa }
+class Pago { -importe: BigDecimal
+-fecha: LocalDate
+-medioPago: MedioDePago
++importeCorregido(): BigDecimal
++getAplicaciones(): List<AplicacionPago> }
+class AplicacionPago { -periodo: YearMonth
+-importeInteres: BigDecimal
+-importeCapital: BigDecimal }
+class AsientoAjuste { -fecha: LocalDate
+-importe: BigDecimal
+-motivo: String }
+class NotificacionMora { -fecha: LocalDate
+-periodosImpagos: int
+-titular: Persona }
+class CalculadorIntereses { +calcular(expensa, fecha): BigDecimal }
+class GestionExpensas { +emitirExpensas(periodo, presupuesto, hoy)
++registrarPago(lote, importe, medio, fecha, hoy): Pago
++registrarAjuste(lote, pago, diferencia, motivo, fecha, hoy) }
+class ControladorExpensas { +emitirExpensas(periodo, presupuesto)
++registrarPago(numero, importe, medio, fecha): Pago
++registrarAjuste(numero, pago, importe, motivo) }
+class Configuracion { +getTasaMora(): BigDecimal
++getDiaVencimiento(): int }
+enum EstadoExpensa { PENDIENTE
+PARCIALMENTE_PAGADA
+PAGADA
+VENCIDA }
+enum MedioDePago { EFECTIVO
+TRANSFERENCIA
+TARJETA }
+Lote "1" *-- "0..*" Expensa
+Lote "1" *-- "0..*" Pago
+Lote "1" *-- "0..*" NotificacionMora
+Pago "1" *-- "0..*" AplicacionPago
+Pago "1" *-- "0..*" AsientoAjuste
+AplicacionPago ..> Expensa : periodo del lote
+Expensa --> EstadoExpensa
+Pago --> MedioDePago
+GestionExpensas --> CalculadorIntereses
+CalculadorIntereses --> Configuracion
+ControladorExpensas --> GestionExpensas
+@enduml

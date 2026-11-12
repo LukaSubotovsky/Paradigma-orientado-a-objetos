@@ -1,0 +1,50 @@
+@startuml
+title Reclamos
+class Reclamo { -numero: int
+-fecha: LocalDateTime
+-tipo: TipoReclamo
+-descripcion: String
+-estado: EstadoReclamo
+-responsable: Personal
++registrarCambio(nuevo, observacion, fecha)
++agregarComentario(texto, autor, fecha)
++estaPendiente(): boolean }
+class GestionReclamos { +registrar(lote, persona, tipo, descripcion, fecha): Reclamo
++asignar(reclamo, personal, fecha)
++avanzarEstado(reclamo, observacion, fecha)
++reabrir(reclamo, persona, motivo, fecha)
++revisarPlazos(fecha) }
+class CambioEstado { -fecha: LocalDateTime
+-nuevoEstado: EstadoReclamo
+-observaciones: String }
+class Comentario { -fecha: LocalDateTime
+-texto: String
+-autor: String }
+enum EstadoReclamo { ABIERTO
+ASIGNADO
+EN_CURSO
+RESUELTO
+CERRADO }
+enum TipoReclamo { SEGURIDAD
+MANTENIMIENTO
+CONVIVENCIA
+ADMINISTRATIVO }
+enum PrioridadReclamo { ALTA
+MEDIA
+BAJA }
+class Configuracion { +getPlazoReapertura(): int
++getHorasEscalamiento(): int
++getMaxEnCurso(): int }
+class ControladorReclamos { +registrarReclamo(lote, tipo, descripcion): Reclamo
++asignarReclamo(numero, legajo)
++avanzarEstado(numero, observacion)
++reabrirReclamo(numero, motivo) }
+Reclamo "1" *-- "1..*" CambioEstado
+Reclamo "1" *-- "0..*" Comentario
+Reclamo --> EstadoReclamo
+Reclamo --> TipoReclamo
+TipoReclamo --> PrioridadReclamo
+GestionReclamos --> Reclamo
+GestionReclamos --> Configuracion
+ControladorReclamos --> GestionReclamos
+@enduml

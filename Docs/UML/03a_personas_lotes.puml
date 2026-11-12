@@ -1,0 +1,49 @@
+@startuml
+title Personas y lotes
+class Persona {
+ -nombre: String
+ -apellido: String
+ -documento: String
+ -telefono: String
+ -correo: String
+ +getDocumento(): String
+}
+class Administrador { -avisos: List<String>
++recibirAviso(mensaje) }
+abstract class Personal { -legajo: int
+-nombre: String
+-fechaIngreso: LocalDate }
+class GuardiaDeSeguridad { -turno: String
+-puesto: PuestoGuardia }
+class EmpleadoDeMantenimiento { -especialidad: Especialidad }
+class Barrio { -lotes: List<Lote>
+-personas: List<Persona>
+-personal: List<Personal>
++crearLote(numero, superficie, titular, desde): Lote
++calcularCoeficientes() }
+class Lote { -numero: int
+-superficie: BigDecimal
+-coeficiente: BigDecimal
+-moroso: boolean
++puedePresentarReclamo(persona, fecha): boolean
++puedeAutorizarVisita(persona, fecha): boolean
++calcularDeudaCapital(): BigDecimal
++cantidadPeriodosImpagos(fecha): int }
+class VinculoLote { -persona: Persona
+-rol: RolLote
+-fechaDesde: LocalDate
+-fechaHasta: LocalDate
++estaVigente(fecha): boolean }
+enum RolLote { TITULAR
+FAMILIAR
+INQUILINO
+AUTORIZADO }
+Persona <|-- Administrador
+Personal <|-- GuardiaDeSeguridad
+Personal <|-- EmpleadoDeMantenimiento
+Barrio "1" *-- "0..150" Lote
+Barrio "1" o-- "0..*" Persona
+Lote "1" *-- "1..*" VinculoLote
+VinculoLote "*" --> "1" Persona
+VinculoLote --> RolLote
+@enduml
