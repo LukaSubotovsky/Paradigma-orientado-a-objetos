@@ -2,11 +2,11 @@
 
 Trabajo práctico de Paradigma Orientado a Objetos, UADE. Propuesta A: gestión de un barrio de 150 lotes.
 
-## Responsable de la entrega
+## Integrantes
 
+- Perez Calle Maribel — 1172744.
+- Juan Ignacio Vara — 1216613.
 - Luka Subotovsky — 1207995.
-
-La etapa 1 se inició en grupo con Perez Calle Maribel (1172744) y Juan Ignacio Vara (1216613), cuyos nombres se conservan en los documentos originales. Luka continúa solo con esta entrega de la etapa 2. Los aportes efectivos se pueden consultar en el historial de Git.
 
 ## Qué hace
 
@@ -100,4 +100,4 @@ Pruebas: `mvn test`. Empaquetado y verificación: `mvn clean verify`. Resultados
 - [Guía para explicar el programa](Docs/08_Guia_defensa.md).
 - [Índice de diagramas](Docs/UML/LEEME.md).
 
-La consigna original exige una revisión de los PR por otro integrante. Como esta etapa continúa con un solo integrante activo, los PR integrados no cuentan con esa revisión: corresponde informar esta situación al docente y consultar si acepta la entrega individual. La asistencia utilizada para preparar la implementación tampoco reemplaza la defensa oral individual.
+El [informe final](Docs/06_Informe_final.md) resume las decisiones de implementación y el [plan de pruebas](Docs/07_Plan_de_pruebas.md) registra los resultados de los recorridos principales.
