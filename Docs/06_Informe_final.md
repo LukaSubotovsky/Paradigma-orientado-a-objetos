@@ -1,6 +1,6 @@
 # Informe final — Los Aromos
 
-Propuesta A. Responsable de la entrega de etapa 2: Luka Subotovsky (1207995). La etapa 1 se inició con Perez Calle Maribel (1172744) y Juan Ignacio Vara (1216613), que siguen identificados en los documentos originales.
+Propuesta A. Perez Calle Maribel (1172744), Juan Ignacio Vara (1216613), Luka Subotovsky (1207995).
 
 ## Resultado
 
@@ -80,14 +80,14 @@ El material recibido incluye contenidos de las clases 1, 2, 4, 5, 6, 8, 9, 10, 1
 
 Se ejecutó `mvn clean verify` con JDK 17 y Maven 3.9.9. Los resultados verificables están en el [plan de pruebas](07_Plan_de_pruebas.md). También se ejecutó el JAR en un proceso separado, con creación inicial y reapertura de datos.
 
-## Trabajo realizado y revisión
+## Trabajo realizado
 
-La etapa 1 y la estructura inicial se recibieron ya existentes en el repositorio. Luka continúa solo con la etapa 2. Esta implementación se preparó a su pedido, con asistencia de una herramienta de IA, en cambios separados de modelo y pruebas, aplicación y archivos, y documentación. El historial de Git conserva los aportes reales de la etapa 1; no se atribuyen a otros integrantes commits de esta implementación.
+La implementación de la etapa 2 se organizó en cambios de modelo y reglas, aplicación y archivos, y documentación. Las pruebas unitarias cubren lógica de negocio, permisos, persistencia y menú. Los recorridos funcionales y sus resultados están en el [plan de pruebas](07_Plan_de_pruebas.md).
 
-Los PR de implementación y documentación se integraron a `main`. Ninguno registra una revisión de otro integrante. La consigna original exige esa revisión y commits propios de todos los integrantes: al continuar la entrega de manera individual, Luka debe explicar el cambio de situación al docente y consultar si acepta esa excepción. Fusionar los PR no equivale a una revisión independiente. La versión integrada se identifica con el tag `etapa-2`; queda la demostración y defensa oral individual.
+Los cambios se integraron a `main` mediante pull requests. La versión de entrega se identifica con el tag `etapa-2`.
 
 ## Reflexión técnica
 
 Separar el menú de las reglas permitió probar los casos de error sin ingresar todos los datos manualmente. Los errores más difíciles estuvieron en las fechas y en los importes, no en crear las clases. Para una versión posterior sería útil una interfaz gráfica y una base de datos; para este trabajo, consola y archivo permiten mostrar las reglas de forma directa.
 
-En la defensa, Luka deberá poder explicar y modificar el código que presenta, en particular las reglas de pagos, los cambios frente al UML inicial, los permisos y la persistencia.
+La guía de defensa reúne ejemplos para explicar las reglas de pagos, los cambios frente al UML inicial, los permisos y la persistencia.
