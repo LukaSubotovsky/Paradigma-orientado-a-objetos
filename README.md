@@ -2,11 +2,11 @@
 
 Trabajo práctico de Paradigma Orientado a Objetos, UADE. Propuesta A: gestión de un barrio de 150 lotes.
 
-## Integrantes
+## Responsable de la entrega
 
-- Perez Calle Maribel — 1172744.
-- Juan Ignacio Vara — 1216613.
 - Luka Subotovsky — 1207995.
+
+La etapa 1 se inició en grupo con Perez Calle Maribel (1172744) y Juan Ignacio Vara (1216613), cuyos nombres se conservan en los documentos originales. Luka continúa solo con esta entrega de la etapa 2. Los aportes efectivos se pueden consultar en el historial de Git.
 
 ## Qué hace
 
@@ -25,12 +25,11 @@ Desde una terminal:
 ```sh
 git clone https://github.com/LukaSubotovsky/Paradigma-orientado-a-objetos.git
 cd Paradigma-orientado-a-objetos
-git switch etapa2-documentacion-final
 mvn clean verify
 java -jar target/los-aromos.jar --demo
 ```
 
-La rama `etapa2-documentacion-final` reúne la implementación y la documentación para revisión. Después de integrar los PR, se podrá usar `main` y marcar `etapa-2` sobre el commit revisado.
+La versión integrada está en `main`. El tag `etapa-2` identifica el commit de entrega.
 
 `--demo` crea datos ficticios solamente si el archivo no existe. Si ya existe, lo carga: no borra el trabajo anterior. En las siguientes ejecuciones alcanza con:
 
@@ -101,4 +100,4 @@ Pruebas: `mvn test`. Empaquetado y verificación: `mvn clean verify`. Resultados
 - [Guía para explicar el programa](Docs/08_Guia_defensa.md).
 - [Índice de diagramas](Docs/UML/LEEME.md).
 
-Los aportes de cada integrante y la revisión de otro miembro deben constar realmente en GitHub. La implementación preparada con asistencia no reemplaza la revisión y defensa individual.
+La consigna original exige una revisión de los PR por otro integrante. Como esta etapa continúa con un solo integrante activo, los PR integrados no cuentan con esa revisión: corresponde informar esta situación al docente y consultar si acepta la entrega individual. La asistencia utilizada para preparar la implementación tampoco reemplaza la defensa oral individual.
