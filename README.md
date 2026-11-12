@@ -25,12 +25,12 @@ Desde una terminal:
 ```sh
 git clone https://github.com/LukaSubotovsky/Paradigma-orientado-a-objetos.git
 cd Paradigma-orientado-a-objetos
-git switch etapa-2/documentacion-final
+git switch etapa2-documentacion-final
 mvn clean verify
 java -jar target/los-aromos.jar --demo
 ```
 
-La rama `etapa-2/documentacion-final` reúne la implementación y la documentación para revisión. Después de integrar los PR, se podrá usar `main` y marcar `etapa-2` sobre el commit revisado.
+La rama `etapa2-documentacion-final` reúne la implementación y la documentación para revisión. Después de integrar los PR, se podrá usar `main` y marcar `etapa-2` sobre el commit revisado.
 
 `--demo` crea datos ficticios solamente si el archivo no existe. Si ya existe, lo carga: no borra el trabajo anterior. En las siguientes ejecuciones alcanza con:
 
