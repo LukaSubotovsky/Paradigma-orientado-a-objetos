@@ -1,0 +1,35 @@
+@startuml
+title Autorización e ingreso
+class Autorizacion { -lote: Lote
+-autoriza: Persona
+-documentoVisitante: String
+-fechaDesde: LocalDate
+-fechaHasta: LocalDate
+-horaDesde: LocalTime
+-horaHasta: LocalTime
+-recurrente: boolean
++estaVigente(fecha): boolean
++permiteIngreso(fecha): boolean
++registrarIngreso(fecha, guardia): RegistroAcceso }
+class RegistroAcceso { -horaIngreso: LocalDateTime
+-horaEgreso: LocalDateTime
+-guardiaIngreso: GuardiaDeSeguridad
++registrarEgreso(hora, guardia, observacion)
++estaAdentro(): boolean }
+class GestionVisitas { +registrarAutorizacion(lote, persona, visitante, documento, desde, hasta, inicio, fin, recurrente, ahora): Autorizacion
++consultarAutorizacion(documento, fecha): Autorizacion
++registrarIngreso(documento, guardia, fecha): RegistroAcceso
++registrarEgreso(documento, guardia, fecha, observacion) }
+class ControladorVisitas { +registrarAutorizacion(lote, visitante, documento, desde, hasta, inicio, fin, recurrente): Autorizacion
++consultarAutorizacion(documento): Autorizacion
++registrarIngreso(documento): RegistroAcceso
++registrarEgreso(documento) }
+class Barrio { -autorizaciones: List<Autorizacion> }
+Barrio "1" o-- "0..*" Autorizacion
+Autorizacion "1" *-- "0..*" RegistroAcceso
+Autorizacion --> Lote
+Autorizacion --> Persona
+RegistroAcceso --> GuardiaDeSeguridad
+ControladorVisitas --> GestionVisitas
+GestionVisitas --> Barrio
+@enduml

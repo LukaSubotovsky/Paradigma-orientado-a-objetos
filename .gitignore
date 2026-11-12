@@ -4,3 +4,8 @@ target/
 .classpath
 .project
 .settings/
+
+# Datos locales de la aplicación
+datos/
+*.dat
+*.dat.bak

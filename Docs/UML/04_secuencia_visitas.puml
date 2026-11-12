@@ -1,31 +1,48 @@
 @startuml
-skinparam classAttributeIconSize 0
-title Registrar ingreso y egreso de una visita
-actor "Guardia de seguridad" as G
+title Registrar ingreso y egreso de visitante
+actor Guardia
+participant MenuConsola as Vista
 participant ControladorVisitas as C
+participant GestionVisitas as G
+participant Barrio as B
 participant Autorizacion as A
 participant RegistroAcceso as R
-G -> C : consultarAutorizacion(documento, fecha, hora)
-C -> A : estaVigente(fecha, hora)
-A --> C : vigente
-alt autorización vencida o inexistente
- C --> G : denegarIngreso(motivo)
-else autorización vigente
- C -> A : permiteIngreso()
- A --> C : permitido
- alt persona ya está dentro
-  C --> G : denegarIngreso("egreso pendiente")
- else autorización no habilita esta visita
-  C --> G : denegarIngreso("fuera de franja o límite")
- else ingreso habilitado
-  G -> C : registrarIngreso(autorizacion, guardia)
-  create R
-  C -> R : RegistroAcceso(horaIngreso, guardia)
-  C --> G : ingreso registrado(registro)
-  G -> C : registrarEgreso(registro)
-  C -> R : registrarEgreso(hora)
-  R --> C : egreso registrado
-  C --> G : egreso confirmado
+Guardia -> Vista : DNI visitante
+Vista -> C : registrarIngreso(documento)
+C -> C : exigirRol(GUARDIA)
+C -> G : registrarIngreso(documento, guardia, ahora)
+G -> B : getAutorizaciones()
+B --> G : autorizaciones
+loop para cada autorización del mismo DNI
+ G -> A : getAccesos()
+ A --> G : registros
+ alt ingreso abierto
+  G --> C : ReglaNegocioException
+  C --> Vista : denegado: egreso pendiente
+  Vista --> Guardia : informar error
  end
+end
+G -> G : consultarAutorizacion(documento, ahora)
+alt no hay autorización vigente o disponible
+ G --> C : ReglaNegocioException
+ C --> Vista : denegado
+ Vista --> Guardia : informar error
+else autorización habilitada
+ G -> A : registrarIngreso(ahora, guardia)
+ create R
+ A -> R : new RegistroAcceso(ahora, guardia)
+ R --> A : registro
+ A --> G : registro
+ G --> C : registro
+ C --> Vista : registro
+ Vista --> Guardia : ingreso confirmado
+ Guardia -> Vista : registrar egreso(documento)
+ Vista -> C : registrarEgreso(documento)
+ C -> G : registrarEgreso(documento, guardia, ahora, nota)
+ G -> R : registrarEgreso(ahora, guardia, nota)
+ R --> G : confirmado
+ G --> C : confirmado
+ C --> Vista : confirmado
+ Vista --> Guardia : egreso registrado
 end
 @enduml

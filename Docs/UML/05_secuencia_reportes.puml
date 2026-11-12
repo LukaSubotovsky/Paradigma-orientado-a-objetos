@@ -1,52 +1,55 @@
 @startuml
-skinparam classAttributeIconSize 0
 title Generar reportes de gestión
 actor Administrador as A
+participant MenuConsola as Vista
 participant ControladorReportes as C
 participant Barrio as B
 participant Lote as L
 participant Reclamo as R
 participant Equipo as E
 participant FilaMorosidad as F
+A -> Vista : seleccionar reporte y filtros
 alt reclamos pendientes
- A -> C : reclamosPendientes(desde, hasta, tipo)
+ Vista -> C : reclamosPendientes(desde, hasta, tipo)
  C -> B : obtenerReclamos()
- B --> C : listaReclamos
- loop por cada reclamo
+ B --> C : lista
+ loop por reclamo
   C -> R : estaPendiente()
-  R --> C : pendiente
-  opt pendiente y dentro del período y tipo solicitado
+  R --> C : boolean
+  opt pendiente y pasa filtros
    C -> C : agregar al resultado
   end
  end
- C --> A : List<Reclamo>
-else morosidad por lote
- A -> C : morosidadPorLote(hasta)
+ C --> Vista : List<Reclamo>
+else morosidad
+ Vista -> C : morosidadPorLote(hasta)
  C -> B : obtenerLotes()
- B --> C : listaLotes
- loop por cada lote
-  C -> L : cantidadPeriodosImpagos()
+ B --> C : lista
+ loop por lote
+  C -> L : cantidadPeriodosImpagos(hasta)
   L --> C : cantidad
-  opt cantidad > 3 (RN12)
+  opt cantidad > 3
    C -> L : calcularDeudaCapital()
    L --> C : capital
    C -> L : calcularDeudaIntereses(hasta)
    L --> C : intereses
-   C -> F : crear(lote, cantidad, capital, intereses)
+   create F
+   C -> F : new FilaMorosidad(lote, cantidad, capital, intereses)
   end
  end
- C --> A : List<FilaMorosidad>
+ C --> Vista : List<FilaMorosidad>
 else equipos fuera de servicio
- A -> C : equiposFueraDeServicio(sector)
+ Vista -> C : equiposFueraDeServicio(sector)
  C -> B : obtenerEquipos()
- B --> C : listaEquipos
- loop por cada equipo
+ B --> C : lista
+ loop por equipo
   C -> E : estaFueraDeServicio()
-  E --> C : fueraDeServicio
-  opt equipo del sector solicitado y fuera de servicio
+  E --> C : boolean
+  opt fuera de servicio y pasa filtro
    C -> C : agregar al resultado
   end
  end
- C --> A : List<Equipo>
+ C --> Vista : List<Equipo>
 end
+Vista --> A : mostrar resultados
 @enduml

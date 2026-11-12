@@ -1,7 +1,14 @@
-# Fuentes UML editables
+# Diagramas de Los Aromos
 
-Los archivos `.puml` son fuentes editables en PlantUML, reconstruidas desde los diagramas JPG que ya estaban en el repositorio. Los JPG originales se conservan como referencia del trabajo previo.
+La etapa 1 conserva los diagramas originales y el PDF del grupo. Para la implementación de etapa 2 se actualizó el modelo y las dos secuencias. Los archivos PlantUML son editables; se pueden renderizar con PlantUML, IntelliJ o su sitio oficial.
 
-Se alinearon las firmas de los métodos de prioridad, los nombres de clases y los mensajes de las secuencias con el diagrama final. En el reporte de morosidad, el filtro usa la regla RN12: más de tres períodos impagos. Estas fuentes expresan el diseño documentado; si el grupo acuerda otra interpretación de un requisito, actualicen en conjunto el informe, las secuencias y el diagrama.
+| Fuente | Qué muestra |
+|---|---|
+| `01_casos_de_uso.puml` | Casos de uso de la propuesta A |
+| `02_clases_inicial.puml` | Primera versión de clases |
+| `03_clases_final.puml` | Vista general de la versión ejecutable |
+| `03a_personas_lotes.puml` a `03g_aplicacion.puml` | Atributos, métodos, tipos y relaciones por tema. Se omiten getters repetitivos. |
+| `04_secuencia_visitas.puml` | Autorización, ingreso, error por ingreso abierto y egreso |
+| `05_secuencia_reportes.puml` | Tres reportes, filtros, ciclos y retornos |
 
-Para renderizar: abrir cada `.puml` con una extensión PlantUML o usar PlantUML CLI. Archivos: casos de uso, clases inicial, clases final, secuencia de visitas y secuencia de reportes.
+Las imágenes JPG antiguas y el PDF de etapa 1 muestran el estado anterior. El [informe final](../06_Informe_final.md) describe cada diferencia, y el [README](../../README.md) indica cómo ejecutar el código correspondiente.

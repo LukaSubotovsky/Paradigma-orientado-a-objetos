@@ -1,0 +1,49 @@
+@startuml
+title Cámaras, luminarias y mantenimiento
+abstract class Equipo { -codigo: String
+-sector: Sector
+-estado: EstadoEquipo
++prioridadOrden(fallasEnSector): PrioridadOrden
++estaFueraDeServicio(): boolean }
+class Camara { -resolucion: int
+-diasGrabados: int
++prioridadOrden(fallasEnSector): PrioridadOrden }
+class Luminaria { -tipoLampara: String
+-potencia: int
++prioridadOrden(fallasEnSector): PrioridadOrden }
+class FallaEquipo { -fecha: LocalDateTime
+-descripcion: String
+-reportadoPor: String }
+class OrdenMantenimiento { -fechaDeApertura: LocalDateTime
+-prioridad: PrioridadOrden
+-fechaDeCierre: LocalDateTime
+-tecnico: EmpleadoDeMantenimiento
++cerrar(fecha, tecnico, reparacion) }
+class GestionEquipos { +registrarEquipo(equipo)
++registrarFalla(equipo, descripcion, autor, fecha): OrdenMantenimiento
++iniciarReparacion(equipo, tecnico)
++cerrarOrden(orden, fecha, tecnico, descripcion)
++verificarCamaraSinFuncionar(fecha) }
+class ControladorEquipos { +registrarEquipo(equipo)
++registrarFalla(codigo, descripcion): OrdenMantenimiento
++iniciarReparacion(codigo, legajo)
++cerrarOrden(codigo, reparacion) }
+enum EstadoEquipo { OPERATIVO
+CON_FALLA
+EN_REPARACION
+FUERA_DE_SERVICIO }
+enum PrioridadOrden { NORMAL
+ALTA }
+enum Sector { CALLES_INTERNAS
+ACCESOS
+ESPACIOS_COMUNES }
+Equipo <|-- Camara
+Equipo <|-- Luminaria
+Equipo "1" *-- "0..*" FallaEquipo
+Equipo "1" *-- "0..*" OrdenMantenimiento
+Equipo --> EstadoEquipo
+Equipo --> Sector
+OrdenMantenimiento --> PrioridadOrden
+GestionEquipos --> Equipo
+ControladorEquipos --> GestionEquipos
+@enduml
